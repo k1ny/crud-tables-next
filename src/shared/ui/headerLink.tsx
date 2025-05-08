@@ -11,7 +11,7 @@ export const HeaderLink = ({ name, icon, href }: HeaderLinkProps) => {
   return (
     <Link
       href={`${href}`}
-      className="flex gap-2 rounded-sm p-2 hover:bg-zinc-900 "
+      className="flex gap-2 rounded-sm p-2 hover:bg-zinc-900"
     >
       {name} {icon}
     </Link>

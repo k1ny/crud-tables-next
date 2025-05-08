@@ -1,8 +1,9 @@
-import { DataTable } from "@/shared/ui/dataTable";
-import { getUsers } from "@/shared/api/users";
-import { UserDto } from "@/shared/types/dto";
+"use server";
 
+import { deleteUser, getUsers } from "@/shared/api/users";
+import { UserDto } from "@/shared/types/dto";
 import { ColumnDef } from "@tanstack/react-table";
+import { UserWrapper } from "@/features/userWrapper";
 
 export default async function Users() {
   const users = (await getUsers()).map((user) => ({
@@ -47,7 +48,7 @@ export default async function Users() {
 
   return (
     <div className="p-4">
-      <DataTable columns={columns} data={users} />
+      <UserWrapper columns={columns} data={users} deleteAction={deleteUser} />
     </div>
   );
 }

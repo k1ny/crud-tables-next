@@ -11,7 +11,7 @@ import {
 
 export const Header = () => {
   return (
-    <div className="flex flex-col min-h-full absolute border-1 pt-2">
+    <div className="flex flex-col min-h-screen absolute border-r pt-2">
       <HeaderLink href={"/"} name="Пользователи" icon={<User />} />
       <HeaderLink href={"/towns"} name="Города" icon={<Hotel />} />
       <HeaderLink
