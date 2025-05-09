@@ -101,6 +101,7 @@ export function DataTable<TData extends { id: number }>({
             </TableCell>
             <TableCell className="text-right">{data.length}</TableCell>
           </TableRow>
+
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (

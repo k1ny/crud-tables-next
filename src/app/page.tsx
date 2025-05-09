@@ -1,5 +1,5 @@
-import { Users } from "@/pages/users";
+import { Users } from "@/screens/users";
 
-export default function Home() {
+export default function IndexPage() {
   return <Users />;
 }
