@@ -2,7 +2,6 @@
 
 import { PackageTypeDto } from "@/shared/types/dto";
 import { ColumnDef } from "@tanstack/react-table";
-import { TownWrapper } from "@/features/townWrapper/ui/townWrapper";
 import { deletePackageType, getPackageTypes } from "@/shared/api/packageTypes";
 import { PackageTypeWrapper } from "@/features/packageTypeWrapper";
 
