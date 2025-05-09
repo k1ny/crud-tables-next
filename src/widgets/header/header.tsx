@@ -19,7 +19,11 @@ export const Header = () => {
         name="Типы посылок"
         icon={<Package />}
       />
-      <HeaderLink href={"/places"} name="Пункты выдачи" icon={<Send />} />
+      <HeaderLink
+        href={"/deliveryPlaces"}
+        name="Пункты выдачи"
+        icon={<Send />}
+      />
       <HeaderLink
         href={"/userAddresses"}
         name="Адреса пользователей"

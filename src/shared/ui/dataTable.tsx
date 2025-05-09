@@ -47,7 +47,7 @@ export function DataTable<TData extends { id: number }>({
 }: DataTableProps<TData>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState(initialData);
-  const [isEditOpen, setOpenEdit] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [isCreateOpen, setOpenCreate] = useState(false);
 
   const filteredData = useMemo(
@@ -129,8 +129,10 @@ export function DataTable<TData extends { id: number }>({
                 <DialogWrapper
                   triggerName="Редактировать"
                   title={`Редактирование ${dialogTriggerTitle}`}
-                  open={isEditOpen}
-                  setOpen={setOpenEdit}
+                  open={editingId === row.original.id}
+                  setOpen={(open) =>
+                    setEditingId(open ? row.original.id : null)
+                  }
                 >
                   {formEditAction(
                     row.original,
@@ -141,7 +143,7 @@ export function DataTable<TData extends { id: number }>({
                         ),
                       );
                     },
-                    () => setOpenEdit(false),
+                    () => setEditingId(null),
                   )}
                 </DialogWrapper>
                 <Button
