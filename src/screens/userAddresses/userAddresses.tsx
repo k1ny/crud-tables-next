@@ -2,13 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { getTowns } from "@/shared/api/towns";
-import { UserAddressesWrapper } from "@/features/userAddressesWrapper/ui/userAddressesWrapper";
 import { UserAddressesDto } from "@/shared/types/dto/userAddresses.dto";
 import { getUsers } from "@/shared/api/users";
 import {
   deleteUserAddress,
   getUserAddresses,
 } from "@/shared/api/userAddresses";
+import { UserAddressesWrapper } from "@/features/userAddressesWrapper";
 
 export default async function UserAddresses() {
   const towns = await getTowns();

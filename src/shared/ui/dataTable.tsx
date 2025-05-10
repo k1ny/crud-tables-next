@@ -62,7 +62,41 @@ export function DataTable<TData extends { id: number }>({
 
   const table = useReactTable({
     data: filteredData,
-    columns,
+    columns: [
+      ...columns,
+      {
+        id: "actions",
+        cell: ({ row }) => (
+          <div className="flex gap-2 justify-end">
+            <DialogWrapper
+              triggerName="Редактировать"
+              title={`Редактирование ${dialogTriggerTitle}`}
+              open={editingId === row.original.id}
+              setOpen={(open) => setEditingId(open ? row.original.id : null)}
+            >
+              {formEditAction(
+                row.original,
+                (updatedItem) => {
+                  setData((prevData) =>
+                    prevData.map((item) =>
+                      item.id === updatedItem.id ? updatedItem : item,
+                    ),
+                  );
+                },
+                () => setEditingId(null),
+              )}
+            </DialogWrapper>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => handleDelete(row.original.id)}
+            >
+              Удалить
+            </Button>
+          </div>
+        ),
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -76,9 +110,13 @@ export function DataTable<TData extends { id: number }>({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex gap-4">
-        <Input onChange={(e) => setSearchQuery(e.target.value)} />
+        <Input
+          placeholder={`Поиск по ${String(filterField)}`}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-1"
+        />
         <DialogWrapper
           triggerName="Создать"
           title={`Создание ${dialogTriggerTitle}`}
@@ -93,71 +131,70 @@ export function DataTable<TData extends { id: number }>({
           )}
         </DialogWrapper>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell colSpan={table.getHeaderGroups()[0].headers.length}>
-              Total
-            </TableCell>
-            <TableCell className="text-right">{data.length}</TableCell>
-          </TableRow>
 
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="text-center">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
+      <div className="rounded-md border overflow-x-auto w-full">
+        <Table className="w-full">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="whitespace-nowrap px-4 py-2 text-center"
+                    style={{
+                      width:
+                        header.getSize() !== 150
+                          ? `${header.getSize()}px`
+                          : "auto",
+                    }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} className="text-center">
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="px-4 py-2"
+                      style={{
+                        width:
+                          cell.column.getSize() !== 150
+                            ? `${cell.column.getSize()}px`
+                            : "auto",
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
                       )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} className="text-center">
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length + 1}
+                  className="h-24 text-center"
+                >
+                  Нет данных
                 </TableCell>
-              ))}
-              <TableCell className="flex gap-2 w-fit">
-                <DialogWrapper
-                  triggerName="Редактировать"
-                  title={`Редактирование ${dialogTriggerTitle}`}
-                  open={editingId === row.original.id}
-                  setOpen={(open) =>
-                    setEditingId(open ? row.original.id : null)
-                  }
-                >
-                  {formEditAction(
-                    row.original,
-                    (updatedItem) => {
-                      setData((prevData) =>
-                        prevData.map((item) =>
-                          item.id === updatedItem.id ? updatedItem : item,
-                        ),
-                      );
-                    },
-                    () => setEditingId(null),
-                  )}
-                </DialogWrapper>
-                <Button
-                  variant="outline"
-                  className="cursor-pointer"
-                  onClick={() => handleDelete(row.original.id)}
-                >
-                  Удалить
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

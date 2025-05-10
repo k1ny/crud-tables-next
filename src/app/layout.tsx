@@ -25,12 +25,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}  flex`}>
-        <div className="min-w-52">
-          <Header />
-        </div>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <div className="flex min-h-screen">
+          <div className="w-52 flex-shrink-0">
+            <Header />
+          </div>
 
-        <div className="w-full">{children}</div>
+          <main className="flex-1 overflow-auto">
+            <div className="mx-auto w-full max-w-[calc(100vw-13rem)] px-4">
+              {children}
+            </div>
+          </main>
+        </div>
       </body>
     </html>
   );
