@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL } from "@/config/env";
-import { UserDto } from "../types/dto";
+import { UserDto } from "../types/dto/user.dto";
 
 export const getUsers = async () => {
   const response = await fetch(`${API_BASE_URL}/users`, { method: "GET" });

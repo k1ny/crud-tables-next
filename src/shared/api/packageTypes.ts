@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL } from "@/config/env";
-import { PackageTypeDto } from "../types/dto";
+import { PackageTypeDto } from "../types/dto/packageType.dto";
 
 export const getPackageTypes = async () => {
   const response = await fetch(`${API_BASE_URL}/packageTypes`, {

@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL } from "@/config/env";
-import { TownDto } from "../types/dto";
+import { TownDto } from "../types/dto/town.dto";
 
 export const getTowns = async () => {
   const response = await fetch(`${API_BASE_URL}/towns`, { method: "GET" });
