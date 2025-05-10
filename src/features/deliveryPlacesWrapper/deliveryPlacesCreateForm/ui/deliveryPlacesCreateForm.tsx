@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
-import { TownDto } from "@/shared/types/dto";
+import { TownDto } from "@/shared/types/dto/town.dto";
 
 export const DeliveryPlacesCreateForm = ({
   onUpdateAction,
@@ -39,7 +39,7 @@ export const DeliveryPlacesCreateForm = ({
         })}
       >
         <div className="flex flex-col gap-1">
-          <Label>Название</Label>
+          <Label>Город</Label>
           <Controller
             name="town_id"
             control={control}

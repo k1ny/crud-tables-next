@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
-import { TownDto } from "@/shared/types/dto";
+import { TownDto } from "@/shared/types/dto/town.dto";
 
 export const DeliveryPlacesEditForm = ({
   onUpdateAction,
@@ -28,6 +28,7 @@ export const DeliveryPlacesEditForm = ({
     defaultValues: DeliveryPlacesDefValues,
   });
   const { handleSubmit, control } = deliveryPlacesCreateForm;
+
   const townName = towns.find(
     (town) => town.id === deliveryPlace.town_id,
   )?.name;
@@ -43,7 +44,7 @@ export const DeliveryPlacesEditForm = ({
         })}
       >
         <div className="flex flex-col gap-1">
-          <Label>Название</Label>
+          <Label>Город</Label>
           <Controller
             name="town_id"
             control={control}
