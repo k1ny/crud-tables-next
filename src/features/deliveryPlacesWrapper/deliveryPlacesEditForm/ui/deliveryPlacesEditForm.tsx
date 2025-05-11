@@ -27,7 +27,28 @@ export const DeliveryPlacesEditForm = ({
   const deliveryPlacesCreateForm = useForm({
     defaultValues: DeliveryPlacesDefValues,
   });
-  const { handleSubmit, control } = deliveryPlacesCreateForm;
+  const { handleSubmit, control, setError, clearErrors, formState } =
+    deliveryPlacesCreateForm;
+
+  const onSubmit = async (data: Partial<DeliveryPlacesDto>) => {
+    const hasAnyFilled = Object.values(data).some(
+      (val) => val !== undefined && val !== null && val !== "",
+    );
+
+    if (!hasAnyFilled) {
+      setError("root", {
+        type: "manual",
+        message: "Заполните хотя бы одно поле для редактирования",
+      });
+      return;
+    }
+
+    clearErrors("root");
+
+    const res = await patchDeliveryPlaces(deliveryPlace.id, data);
+    onUpdateAction(res);
+    closeDialogAction();
+  };
 
   const townName = towns.find(
     (town) => town.id === deliveryPlace.town_id,
@@ -35,14 +56,7 @@ export const DeliveryPlacesEditForm = ({
 
   return (
     <FormProvider {...deliveryPlacesCreateForm}>
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={handleSubmit(async (data) => {
-          const res = await patchDeliveryPlaces(deliveryPlace.id, data);
-          onUpdateAction(res);
-          closeDialogAction();
-        })}
-      >
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1">
           <Label>Город</Label>
           <Controller
@@ -75,11 +89,26 @@ export const DeliveryPlacesEditForm = ({
           <Controller
             name="latitude"
             control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder={deliveryPlace.latitude as string}
-              />
+            rules={{
+              pattern: {
+                value: /^-?\d{1,3}(\.\d{1,6})?$/,
+                message:
+                  "Широта должна быть числом с максимум 6 знаками после запятой",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input
+                  {...field}
+                  placeholder={deliveryPlace.latitude as string}
+                  type="number"
+                />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -89,17 +118,38 @@ export const DeliveryPlacesEditForm = ({
           <Controller
             name="longitude"
             control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder={deliveryPlace.longitude as string}
-              />
+            rules={{
+              pattern: {
+                value: /^-?\d{1,3}(\.\d{1,6})?$/,
+                message:
+                  "Долгота должна быть числом с максимум 6 знаками после запятой",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input
+                  {...field}
+                  placeholder={deliveryPlace.longitude as string}
+                  type="number"
+                />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
 
+        {formState.errors.root && (
+          <span className="text-red-500 text-sm">
+            {formState.errors.root.message}
+          </span>
+        )}
+
         <Button variant="outline" type="submit">
-          Создать
+          Редактировать
         </Button>
       </form>
     </FormProvider>
