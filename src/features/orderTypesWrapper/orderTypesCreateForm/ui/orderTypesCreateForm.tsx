@@ -31,9 +31,17 @@ export const OrderTypesCreateForm = ({
           <Label>Название</Label>
           <Controller
             name="name"
+            rules={{ required: "Это поле обязательно" }}
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите название" />
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите название" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>

@@ -25,7 +25,6 @@ export const OrderTypesEditForm = ({
         className="flex flex-col gap-4"
         onSubmit={handleSubmit(async (data) => {
           const res = await patchOrderType(orderType.id, data);
-          console.log(res, data);
           onUpdateAction(res);
           closeDialogAction();
         })}
@@ -34,9 +33,17 @@ export const OrderTypesEditForm = ({
           <Label>Название</Label>
           <Controller
             name="name"
+            rules={{ required: "Необходимо изменить 1 поле" }}
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder={orderType.name} />
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder={orderType.name} />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
