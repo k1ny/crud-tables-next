@@ -54,7 +54,7 @@ export function DataTable<TData extends { id: number }>({
     () =>
       data.filter((item) =>
         (item[filterField] as string)
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase()),
       ),
     [data, searchQuery, filterField],

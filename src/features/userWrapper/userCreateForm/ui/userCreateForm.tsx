@@ -2,8 +2,8 @@
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { Button, Input, Label } from "@/shared/ui";
 import { postUser } from "@/shared/api/users";
-import { UserDto } from "@/shared/types/dto";
 import { userDefFormValues } from "../../constants";
+import { UserDto } from "@/shared/types/dto/user.dto";
 
 export const UserCreateForm = ({
   onUpdateAction,
@@ -34,8 +34,16 @@ export const UserCreateForm = ({
           <Controller
             name="first_name"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите имя" />
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите имя" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -45,8 +53,16 @@ export const UserCreateForm = ({
           <Controller
             name="last_name"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите фамилию" />
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите фамилию" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -67,8 +83,30 @@ export const UserCreateForm = ({
           <Controller
             name="passport_serial"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите номер паспорта" />
+            rules={{
+              required: "Это поле обязательно",
+              minLength: {
+                value: 10,
+                message: "Номер паспорта должен содержать 10 цифр",
+              },
+              maxLength: {
+                value: 10,
+                message: "Номер паспорта должен содержать 10 цифр",
+              },
+              pattern: {
+                value: /^\d+$/,
+                message: "Номер паспорта должен содержать только цифры",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите номер паспорта" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -78,8 +116,22 @@ export const UserCreateForm = ({
           <Controller
             name="email"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите email" />
+            rules={{
+              required: "Это поле обязательно",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Введите корректный email",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите email" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -89,8 +141,22 @@ export const UserCreateForm = ({
           <Controller
             name="password_hash"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Хэш пароль" />
+            rules={{
+              required: "Это поле обязательно",
+              minLength: {
+                value: 6,
+                message: "Длина должна быть не менее 6 символов",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите хэш пароля" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>

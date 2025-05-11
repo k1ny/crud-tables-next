@@ -1,4 +1,4 @@
-import { UserDto } from "@/shared/types/dto";
+import { UserDto } from "@/shared/types/dto/user.dto";
 
 export const userDefFormValues: Omit<UserDto, "id"> = {
   last_name: "",
