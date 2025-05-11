@@ -64,7 +64,11 @@ export const TownEditForm = ({
             control={control}
             render={({ field, fieldState }) => (
               <>
-                <Input {...field} placeholder={`${town.latitude}`} />
+                <Input
+                  {...field}
+                  placeholder={`${town.latitude}`}
+                  type="number"
+                />
                 {fieldState.error && (
                   <span className="text-red-500 text-sm">
                     {fieldState.error.message}
@@ -89,7 +93,11 @@ export const TownEditForm = ({
             }}
             render={({ field, fieldState }) => (
               <>
-                <Input {...field} placeholder={`${town.longitude}`} />
+                <Input
+                  {...field}
+                  placeholder={`${town.longitude}`}
+                  type="number"
+                />
                 {fieldState.error && (
                   <span className="text-red-500 text-sm">
                     {fieldState.error.message}

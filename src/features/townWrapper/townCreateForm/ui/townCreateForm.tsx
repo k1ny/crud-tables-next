@@ -59,7 +59,7 @@ export const TownCreateForm = ({
             }}
             render={({ field, fieldState }) => (
               <>
-                <Input {...field} placeholder="Введите широту" />
+                <Input {...field} placeholder="Введите широту" type="number" />
                 {fieldState.error && (
                   <span className="text-red-500 text-sm">
                     {fieldState.error.message}
@@ -85,7 +85,7 @@ export const TownCreateForm = ({
             }}
             render={({ field, fieldState }) => (
               <>
-                <Input {...field} placeholder="Введите долготу" />
+                <Input {...field} placeholder="Введите долготу" type="number" />
                 {fieldState.error && (
                   <span className="text-red-500 text-sm">
                     {fieldState.error.message}

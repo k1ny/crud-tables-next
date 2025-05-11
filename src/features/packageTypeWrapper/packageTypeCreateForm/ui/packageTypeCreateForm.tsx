@@ -1,9 +1,9 @@
 "use client";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { Button, Input, Label } from "@/shared/ui";
-import { PackageTypeDto } from "@/shared/types/dto";
 import { postPackageType } from "@/shared/api/packageTypes";
 import { PackageTypeDefValues } from "@/features/townWrapper/constants";
+import { PackageTypeDto } from "@/shared/types/dto/packageType.dto";
 
 export const PackageTypeCreateForm = ({
   onUpdateAction,
@@ -32,8 +32,16 @@ export const PackageTypeCreateForm = ({
           <Controller
             name="name"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите название" />
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите название" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -43,8 +51,22 @@ export const PackageTypeCreateForm = ({
           <Controller
             name="length"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите длинну" type="number" />
+            rules={{
+              required: "Это поле обязательно",
+              pattern: {
+                value: /^\d+$/,
+                message: "Допустимы только цифры",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите длинну" type="number" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -54,8 +76,22 @@ export const PackageTypeCreateForm = ({
           <Controller
             name="width"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите ширину" />
+            rules={{
+              required: "Это поле обязательно",
+              pattern: {
+                value: /^\d+$/,
+                message: "Допустимы только цифры",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите ширину" type="number" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -65,8 +101,22 @@ export const PackageTypeCreateForm = ({
           <Controller
             name="height"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите высоту" />
+            rules={{
+              required: "Это поле обязательно",
+              pattern: {
+                value: /^\d+$/,
+                message: "Допустимы только цифры",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите высоту" type="number" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -75,9 +125,23 @@ export const PackageTypeCreateForm = ({
           <Label>Вес</Label>
           <Controller
             name="weight"
+            rules={{
+              required: "Это поле обязательно",
+              pattern: {
+                value: /^\d+$/,
+                message: "Допустимы только цифры",
+              },
+            }}
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите вес" />
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите вес" type="number" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
