@@ -45,24 +45,34 @@ export const UserAddressesCreateForm = ({
           <Controller
             name="town_id"
             control={control}
-            render={({ field }) => (
-              <Select
-                value={field.value as string}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder={field.value || "Выберите город"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {towns.map((town) => (
-                      <SelectItem key={town.id} value={town.id.toString()}>
-                        {town.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Select
+                  value={field.value as string}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue
+                      placeholder={field.value || "Выберите город"}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {towns.map((town) => (
+                        <SelectItem key={town.id} value={town.id.toString()}>
+                          {town.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -72,26 +82,34 @@ export const UserAddressesCreateForm = ({
           <Controller
             name="user_id"
             control={control}
-            render={({ field }) => (
-              <Select
-                value={field.value as string}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue
-                    placeholder={field.value || "Выберите пользователя"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {users.map((user) => (
-                      <SelectItem key={user.id} value={user.id.toString()}>
-                        {`${user.last_name} ${user.first_name} ${user.middle_name}`}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Select
+                  value={field.value as string}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue
+                      placeholder={field.value || "Выберите пользователя"}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id.toString()}>
+                          {`${user.last_name} ${user.first_name} ${user.middle_name}`}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -99,10 +117,18 @@ export const UserAddressesCreateForm = ({
         <div className="flex flex-col gap-1">
           <Label>Улица</Label>
           <Controller
+            rules={{ required: "Это поле обязательно" }}
             name="street"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите улицу" />
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите улицу" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -113,7 +139,13 @@ export const UserAddressesCreateForm = ({
             name="entrance"
             control={control}
             render={({ field }) => (
-              <Input {...field} placeholder="Введите номер подъезда" />
+              <>
+                <Input
+                  {...field}
+                  placeholder="Введите номер подъезда"
+                  type="number"
+                />
+              </>
             )}
           />
         </div>
@@ -124,7 +156,11 @@ export const UserAddressesCreateForm = ({
             name="apartment_number"
             control={control}
             render={({ field }) => (
-              <Input {...field} placeholder="Введите номер квартиры" />
+              <Input
+                {...field}
+                placeholder="Введите номер квартиры"
+                type="number"
+              />
             )}
           />
         </div>
@@ -135,7 +171,7 @@ export const UserAddressesCreateForm = ({
             name="floor"
             control={control}
             render={({ field }) => (
-              <Input {...field} placeholder="Введите этаж" />
+              <Input {...field} placeholder="Введите этаж" type="number" />
             )}
           />
         </div>
@@ -146,7 +182,7 @@ export const UserAddressesCreateForm = ({
             name="intercom_code"
             control={control}
             render={({ field }) => (
-              <Input {...field} placeholder="Код домофона" />
+              <Input {...field} placeholder="Код домофона" type="number" />
             )}
           />
         </div>

@@ -30,7 +30,28 @@ export const UserAddressesEditForm = ({
   const deliveryPlacesCreateForm = useForm({
     defaultValues: UserAddressesDefValues,
   });
-  const { handleSubmit, control } = deliveryPlacesCreateForm;
+  const { handleSubmit, control, setError, clearErrors, formState } =
+    deliveryPlacesCreateForm;
+
+  const onSubmit = async (data: Partial<UserAddressesDto>) => {
+    const hasAnyFilled = Object.values(data).some(
+      (val) => val !== undefined && val !== null && val !== "",
+    );
+
+    if (!hasAnyFilled) {
+      setError("root", {
+        type: "manual",
+        message: "Заполните хотя бы одно поле для редактирования",
+      });
+      return;
+    }
+
+    clearErrors("root");
+
+    const res = await patchUserAddress(userAddress.id, data);
+    onUpdateAction(res);
+    closeDialogAction();
+  };
 
   const townName = towns.find((town) => town.id === userAddress.town_id)?.name;
   const user = users.find((user) => user.id === userAddress.user_id);
@@ -38,14 +59,7 @@ export const UserAddressesEditForm = ({
 
   return (
     <FormProvider {...deliveryPlacesCreateForm}>
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={handleSubmit(async (data) => {
-          const res = await patchUserAddress(userAddress.id, data);
-          onUpdateAction(res);
-          closeDialogAction();
-        })}
-      >
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1">
           <Label>Город</Label>
           <Controller
@@ -118,6 +132,7 @@ export const UserAddressesEditForm = ({
             control={control}
             render={({ field }) => (
               <Input
+                type="number"
                 {...field}
                 placeholder={
                   userAddress.entrance === null
@@ -136,6 +151,7 @@ export const UserAddressesEditForm = ({
             control={control}
             render={({ field }) => (
               <Input
+                type="number"
                 {...field}
                 placeholder={
                   userAddress.apartment_number === null
@@ -155,6 +171,7 @@ export const UserAddressesEditForm = ({
             render={({ field }) => (
               <Input
                 {...field}
+                type="number"
                 placeholder={
                   userAddress.floor === null
                     ? "Введите этаж"
@@ -173,6 +190,7 @@ export const UserAddressesEditForm = ({
             render={({ field }) => (
               <Input
                 {...field}
+                type="number"
                 placeholder={
                   userAddress.intercom_code === null
                     ? "Введите номер домофона"
@@ -182,6 +200,12 @@ export const UserAddressesEditForm = ({
             )}
           />
         </div>
+
+        {formState.errors.root && (
+          <span className="text-red-500 text-sm">
+            {formState.errors.root.message}
+          </span>
+        )}
 
         <Button variant="outline" type="submit">
           Редактировать
