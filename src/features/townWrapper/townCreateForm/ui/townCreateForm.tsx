@@ -1,9 +1,9 @@
 "use client";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { Button, Input, Label } from "@/shared/ui";
-import { TownDto } from "@/shared/types/dto";
 import { postTown } from "@/shared/api/towns";
 import { townDefFormValues } from "@/features/packageTypeWrapper/constants";
+import { TownDto } from "@/shared/types/dto/town.dto";
 
 export const TownCreateForm = ({
   onUpdateAction,
@@ -30,8 +30,16 @@ export const TownCreateForm = ({
           <Controller
             name="name"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите название" />
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите название" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -41,8 +49,23 @@ export const TownCreateForm = ({
           <Controller
             name="latitude"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите широту" />
+            rules={{
+              required: "Это поле обязательно",
+              pattern: {
+                value: /^-?\d{1,3}(\.\d{1,6})?$/,
+                message:
+                  "Широта должна быть числом с максимум 6 знаками после запятой",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите широту" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -52,8 +75,23 @@ export const TownCreateForm = ({
           <Controller
             name="longitude"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите долготу" />
+            rules={{
+              required: "Это поле обязательно",
+              pattern: {
+                value: /^-?\d{1,3}(\.\d{1,6})?$/,
+                message:
+                  "Широта должна быть числом с максимум 6 знаками после запятой",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите долготу" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
