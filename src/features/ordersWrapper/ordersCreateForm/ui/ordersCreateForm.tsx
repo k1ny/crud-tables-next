@@ -42,44 +42,70 @@ export const OrdersCreateForm = ({
   const ordersCreateForm = useForm({
     defaultValues: OrderDefValues,
   });
-  const { handleSubmit, control } = ordersCreateForm;
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    setError,
+    getValues,
+    clearErrors,
+    formState,
+  } = ordersCreateForm;
   const [place, setPlace] = useState<string>("");
+
+  const submitForm = async (data: Partial<OrderDto>) => {
+    const addressId = getValues("receiver_address_id");
+    const pointId = getValues("receiver_point_id");
+    if (!addressId && !pointId) {
+      setError("root", {
+        type: "manual",
+        message: "Выберите и заполните место получения посылки",
+      });
+      return;
+    }
+
+    clearErrors("root");
+    const res = await postOrder(data);
+    onUpdateAction(res);
+    closeDialogAction();
+  };
 
   return (
     <FormProvider {...ordersCreateForm}>
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={handleSubmit(async (data) => {
-          const res = await postOrder(data);
-          onUpdateAction(res);
-          closeDialogAction();
-        })}
-      >
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(submitForm)}>
         <div className="flex flex-col gap-1">
           <Label>Отправитель</Label>
           <Controller
             name="sender_id"
+            rules={{ required: "Это поле обязательно" }}
             control={control}
-            render={({ field }) => (
-              <Select
-                value={field.value as string}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue
-                    placeholder={field.value || "Выберите отправителя"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {users.map((user) => (
-                      <SelectItem key={user.id} value={user.id.toString()}>
-                        {`${user.last_name} ${user.first_name} ${user.middle_name}`}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            render={({ field, fieldState }) => (
+              <>
+                <Select
+                  value={field.value as string}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue
+                      placeholder={field.value || "Выберите отправителя"}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id.toString()}>
+                          {`${user.last_name} ${user.first_name} ${user.middle_name}`}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -89,29 +115,37 @@ export const OrdersCreateForm = ({
           <Controller
             name="sender_address"
             control={control}
-            render={({ field }) => (
-              <Select
-                value={field.value as string}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue
-                    placeholder={field.value || "Выберите пункт отправки"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {deliveryPlaces.map((deliveryPlace) => (
-                      <SelectItem
-                        key={deliveryPlace.id}
-                        value={deliveryPlace.id.toString()}
-                      >
-                        {deliveryPlace.id}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Select
+                  value={field.value as string}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue
+                      placeholder={field.value || "Выберите пункт отправки"}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {deliveryPlaces.map((deliveryPlace) => (
+                        <SelectItem
+                          key={deliveryPlace.id}
+                          value={deliveryPlace.id.toString()}
+                        >
+                          {deliveryPlace.id}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -120,30 +154,38 @@ export const OrdersCreateForm = ({
           <Label>Тип посылки</Label>
           <Controller
             name="package_id"
+            rules={{ required: "Это поле обязательно" }}
             control={control}
-            render={({ field }) => (
-              <Select
-                value={field.value as string}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue
-                    placeholder={field.value || "Выберите тип посылки"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {packageTypes.map((packageType) => (
-                      <SelectItem
-                        key={packageType.id}
-                        value={packageType.id.toString()}
-                      >
-                        {`${packageType.name}: ${packageType.length}х${packageType.width}x${packageType.height}, ${packageType.weight}kg`}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            render={({ field, fieldState }) => (
+              <>
+                <Select
+                  value={field.value as string}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue
+                      placeholder={field.value || "Выберите тип посылки"}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {packageTypes.map((packageType) => (
+                        <SelectItem
+                          key={packageType.id}
+                          value={packageType.id.toString()}
+                        >
+                          {`${packageType.name}: ${packageType.length}х${packageType.width}x${packageType.height}, ${packageType.weight}kg`}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -153,29 +195,37 @@ export const OrdersCreateForm = ({
           <Controller
             name="order_type"
             control={control}
-            render={({ field }) => (
-              <Select
-                value={field.value as string}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue
-                    placeholder={field.value || "Выберите тип заказа"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {orderTypes.map((orderType) => (
-                      <SelectItem
-                        key={orderType.id}
-                        value={orderType.id.toString()}
-                      >
-                        {orderType.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            rules={{ required: "Это поле обязательно" }}
+            render={({ field, fieldState }) => (
+              <>
+                <Select
+                  value={field.value as string}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue
+                      placeholder={field.value || "Выберите тип заказа"}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {orderTypes.map((orderType) => (
+                        <SelectItem
+                          key={orderType.id}
+                          value={orderType.id.toString()}
+                        >
+                          {orderType.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -184,9 +234,17 @@ export const OrdersCreateForm = ({
           <Label>Фамилия получателя</Label>
           <Controller
             name="receiver_last_name"
+            rules={{ required: "Это поле обязательно" }}
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите фамилию получателя" />
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите фамилию получателя" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -194,10 +252,18 @@ export const OrdersCreateForm = ({
         <div className="flex flex-col gap-1">
           <Label>Имя получателя</Label>
           <Controller
+            rules={{ required: "Это поле обязательно" }}
             name="receiver_first_name"
             control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Введите имя получателя" />
+            render={({ field, fieldState }) => (
+              <>
+                <Input {...field} placeholder="Введите имя получателя" />
+                {fieldState.error && (
+                  <span className="text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </span>
+                )}
+              </>
             )}
           />
         </div>
@@ -216,7 +282,16 @@ export const OrdersCreateForm = ({
         <div className="flex flex-col gap-1">
           <Label>Адрес получателя или пункт выдачи</Label>
 
-          <RadioGroup onValueChange={(value) => setPlace(value)}>
+          <RadioGroup
+            onValueChange={(value) => {
+              setPlace(value);
+              if (value === "address") {
+                setValue("receiver_point_id", "");
+              } else {
+                setValue("receiver_address_id", "");
+              }
+            }}
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="address" id="r1" />
               <Label htmlFor="r1">Адрес</Label>
@@ -289,6 +364,12 @@ export const OrdersCreateForm = ({
             />
           )}
         </div>
+
+        {formState.errors.root && (
+          <span className="text-red-500 text-sm">
+            {formState.errors.root.message}
+          </span>
+        )}
 
         <Button variant="outline" type="submit">
           Создать

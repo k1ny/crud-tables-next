@@ -55,7 +55,7 @@ export default async function Orders() {
     },
     {
       accessorKey: "receiver_address_id",
-      header: "receiver_middle_name",
+      header: "receiver_address_id",
     },
     {
       accessorKey: "receiver_point_id",

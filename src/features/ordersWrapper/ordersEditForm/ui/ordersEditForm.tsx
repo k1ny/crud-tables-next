@@ -44,7 +44,15 @@ export const OrdersEditForm = ({
   const ordersCreateForm = useForm({
     defaultValues: OrderDefValues,
   });
-  const { handleSubmit, control } = ordersCreateForm;
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    setError,
+    getValues,
+    clearErrors,
+    formState,
+  } = ordersCreateForm;
   useEffect(() => {
     setPlace(order.receiver_point_id ? "point" : "address");
   }, [order.receiver_point_id]);
@@ -62,16 +70,42 @@ export const OrdersEditForm = ({
     (orderType) => orderType.id === order?.order_type,
   );
 
+  const submitForm = async (data: Partial<OrderDto>) => {
+    const addressId = getValues("receiver_address_id");
+    const pointId = getValues("receiver_point_id");
+
+    if (
+      (addressId || order.receiver_address_id) &&
+      (pointId || order.receiver_point_id)
+    ) {
+      setError("root", {
+        type: "manual",
+        message: "Можно выбрать только адрес *или* пункт выдачи, не оба сразу",
+      });
+      return;
+    }
+
+    const hasAnyFilled = Object.values(data).some(
+      (val) => val !== undefined && val !== null && val !== "",
+    );
+
+    if (!hasAnyFilled) {
+      setError("root", {
+        type: "manual",
+        message: "Заполните хотя бы одно поле для редактирования",
+      });
+      return;
+    }
+
+    clearErrors("root");
+    const res = await patchOrder(order.id, data);
+    onUpdateAction(res);
+    closeDialogAction();
+  };
+
   return (
     <FormProvider {...ordersCreateForm}>
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={handleSubmit(async (data) => {
-          const res = await patchOrder(order.id, data);
-          onUpdateAction(res);
-          closeDialogAction();
-        })}
-      >
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(submitForm)}>
         <div className="flex flex-col gap-1">
           <Label>Отправитель</Label>
           <Controller
@@ -238,7 +272,14 @@ export const OrdersEditForm = ({
         <div className="flex flex-col gap-1">
           <Label>Адрес получателя или пункт выдачи</Label>
           <RadioGroup
-            onValueChange={(value) => setPlace(value)}
+            onValueChange={(value) => {
+              setPlace(value);
+              if (value === "address") {
+                setValue("receiver_point_id", "");
+              } else {
+                setValue("receiver_address_id", "");
+              }
+            }}
             defaultValue={order.receiver_point_id ? "point" : "address"}
           >
             <div className="flex items-center space-x-2">
@@ -321,6 +362,12 @@ export const OrdersEditForm = ({
             />
           )}
         </div>
+
+        {formState.errors.root && (
+          <span className="text-red-500 text-sm">
+            {formState.errors.root.message}
+          </span>
+        )}
 
         <Button variant="outline" type="submit">
           Редактировать
